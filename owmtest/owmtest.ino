@@ -16,8 +16,7 @@ static LGFX lcd;
 static LGFX_Sprite sprite(&lcd);
 
 void get_icon(char* icon)
-{
-  StaticJsonBuffer<1000> jsonBuffer;
+{ 
   Serial.println("\nStarting connection to server...");
   if (!client.connect(server, 443)) 
   {
@@ -30,7 +29,7 @@ void get_icon(char* icon)
     char reqBuf[128];
     sprintf(reqBuf, "GET https://openweathermap.org/img/w/%s.png HTTP/1.1", icon);
     Serial.println(reqBuf);
-    client.println("GET https://openweathermap.org/img/w/10d.png HTTP/1.1");
+    client.println(reqBuf);
     client.println("Host: api.openweathermap.org");
     client.println("Connection: close");
     client.println();
@@ -76,7 +75,7 @@ weather_t get_weather()
   weather.temp = -173;
   weather.humidity = -100;  
 
-  StaticJsonBuffer<200> jsonBuffer;
+  StaticJsonBuffer<2000> jsonBuffer;
   Serial.println("\nStarting connection to server...");
   if (!client.connect(server, 443)) 
   {
@@ -180,7 +179,6 @@ void setup()
   lcd.println(weather.temp);
   lcd.print("Humidity: ");
   lcd.println(weather.humidity);
-  
   get_icon(weather.icon);
 }
 
