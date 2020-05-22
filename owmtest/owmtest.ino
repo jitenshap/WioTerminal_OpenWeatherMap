@@ -9,7 +9,9 @@ const char* password = "YOUR_WIFI_PWD"; // your network password
 char* api_key = "YOUR_OWM_API_KEY";
 char* city = "YOUR_CITY";
 
-const char* server = "api.openweathermap.org";
+const char* apiserver = "api.openweathermap.org";
+const char* iconserver = "openweathermap.org";
+
 
 WiFiClientSecure client;
 static LGFX lcd;
@@ -18,7 +20,7 @@ static LGFX_Sprite sprite(&lcd);
 void get_icon(char* icon)
 { 
   Serial.println("\nStarting connection to server...");
-  if (!client.connect(server, 443)) 
+  if (!client.connect(iconserver, 443)) 
   {
     Serial.println("Connection failed!");
   } 
@@ -77,7 +79,7 @@ weather_t get_weather()
 
   StaticJsonBuffer<2000> jsonBuffer;
   Serial.println("\nStarting connection to server...");
-  if (!client.connect(server, 443)) 
+  if (!client.connect(apiserver, 443)) 
   {
     Serial.println("Connection failed!");
     return weather;
