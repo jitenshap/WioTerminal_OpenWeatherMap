@@ -60,10 +60,10 @@ void get_icon(char* icon)
       icon_len ++;
       //Serial.write(client.read());
     }
+    icon_len --;
     client.stop();
-    Serial.println("Complete len = " + (String)icon_len);
+    Serial.println("Icon download complete. len = " + (String)icon_len);
     lcd.drawPng(icon, icon_len, 0, 50, 50, 50 ,0, 0, 1.0);
-    Serial.println("Done");
   }
 }
 
@@ -71,7 +71,7 @@ weather_t get_weather()
 {
   weather_t weather;
   weather.icon[0] = '\0';
-  weather.forecast[0] = '\0';
+  weather.stat[0] = '\0';
   weather.temp = -173;
   weather.humidity = -100;  
 
@@ -86,7 +86,7 @@ weather_t get_weather()
   {
     Serial.println("Connected to server!");
     // Make a HTTP request:
-    char tmp[192];
+    char tmp[19];
     sprintf(tmp, "GET https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s HTTP/1.1", city, api_key);
     Serial.print("Request: ");
     Serial.println(tmp);
@@ -101,7 +101,7 @@ weather_t get_weather()
       headers += line + "\n";
       if (line == "\r") 
       {
-        Serial.println("headers received");
+        Serial.println("Headers received");
         Serial.println(headers);
         break;
       }
@@ -126,9 +126,9 @@ weather_t get_weather()
     else
     {
       strcpy(weather.icon, root["weather"][0]["icon"]);
-      strcpy(weather.forecast, root["weather"][0]["main"]);
+      strcpy(weather.stat, root["weather"][0]["main"]);
       weather.temp = ((float)root["main"]["temp"] - 273.15);
-      weather.humidity = root["main"]["humidity"];
+      weather.humidity = (int)(root["main"]["humidity"]);
       return weather;
     }
   }
@@ -146,7 +146,7 @@ void setup()
   lcd.setColorDepth(24);
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Weather forecast");
+  lcd.print("Weather info");
   delay(100);
 
   Serial.print("Attempting to connect to SSID: ");
@@ -166,20 +166,21 @@ void setup()
   
   client.setCACert(test_root_ca);
   weather_t weather = get_weather();
-  Serial.print("forecast = ");
-  Serial.println(weather.forecast);
+  Serial.print("weather = ");
+  Serial.println(weather.stat);
   Serial.print("icon = ");
   Serial.println(weather.icon);
   Serial.println("temp = " + (String)weather.temp);
   Serial.println("humidity = " + (String)weather.humidity);
   lcd.setCursor(0, 20);
-  lcd.print("Forecast: ");
-  lcd.println(weather.forecast);
+  lcd.print("Weather: ");
+  lcd.println(weather.stat);
   lcd.print("Temperature: ");
   lcd.println(weather.temp);
   lcd.print("Humidity: ");
   lcd.println(weather.humidity);
   get_icon(weather.icon);
+  Serial.println("Done");
 }
 
 void loop() 
