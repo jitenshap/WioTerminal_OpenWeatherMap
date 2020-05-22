@@ -32,7 +32,7 @@ void get_icon(char* icon)
     sprintf(reqBuf, "GET https://openweathermap.org/img/w/%s.png HTTP/1.1", icon);
     Serial.println(reqBuf);
     client.println(reqBuf);
-    client.println("Host: api.openweathermap.org");
+    client.println("Host: openweathermap.org");
     client.println("Connection: close");
     client.println();
     int len = 0;
